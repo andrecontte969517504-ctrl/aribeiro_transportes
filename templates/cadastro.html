@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro Aribeiro Transportes</title>
+<style>
+    body { background: #000; color: gold; font-family: Arial; padding: 20px; text-align: center; }
+    .caixa { border: 1px solid gold; padding: 15px; border-radius: 10px; width: 350px; margin: auto; background: #111; box-shadow: 0 0 12px gold; }
+    input, select, button { width: 90%; padding: 10px; margin: 8px; border-radius: 6px; border: 1px solid gold; background: #000; color: gold; }
+    button { background: #111; cursor: pointer; }
+    button:hover { background: gold; color: black; }
+    .voltar { display: block; margin-top: 20px; color: gold; text-decoration: none; }
+    .menu-btn { position: fixed; top: 10px; left: 10px; z-index: 1001; background: #222; color: #ffd54a; border: none; padding: 10px 14px; border-radius: 6px; cursor: pointer; font-size: 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.5); transition: background 0.2s; }
+    .menu-btn:hover { background: #333; }
+    .side-menu { position: fixed; top: 0; left: 0; width: 230px; height: 100%; background: rgba(0,0,0,0.85); overflow-y: auto; transform: translateX(-250px); transition: transform 0.3s ease; z-index: 1000; padding-top: 60px; box-shadow: 3px 0 15px rgba(0,0,0,0.6); }
+    .side-menu.open { transform: translateX(0); }
+    .side-menu a { display: flex; align-items: center; text-decoration: none; color: #fff; padding: 10px 15px; transition: background 0.2s; }
+    .side-menu a:hover { background: rgba(255,255,255,0.1); }
+    main { padding: 20px; margin-top: 60px; }
+    #zap-box { position: fixed; bottom: 20px; right: 20px; z-index: 9999; background-color: #25D366; color: #fff; padding: 12px 18px; border-radius: 12px; display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; text-decoration: none !important; box-shadow: 0 3px 10px rgba(0,0,0,0.25); transition: 0.2s ease; }
+    #zap-box img { width: 30px; }
+    #zap-box:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0,0,0,0.35); }
+</style>
+</head>
+<body>
+
+<button class="menu-btn" onclick="toggleMenu()">☰ Menu</button>
+<nav class="side-menu" id="menu">
+  <a href="index.html"><img src="linkico.png" alt="">Home</a>
+  <a href="cadastro.html"><img src="linkico.png" alt="">Cadastro</a>
+  <a href="dashboard.html"><img src="linkico.png" alt="">Dashboard</a>
+  <a href="chatforum.html"><img src="linkico.png" alt="">Chat Forum</a>
+</nav>
+
+<main>
+    <div class="titulo">Cadastro - Aribeiro Transportes</div>
+    <div class="caixa">
+        <input id="nome" placeholder="Nome completo" required>
+        <input id="cpf" placeholder="CPF">
+        <input id="telefone" placeholder="Telefone">
+        <select id="tipo" required>
+            <option value="">Tipo de Usuário</option>
+            <option value="gerente">Gerente</option>
+            <option value="motorista">Motorista</option>
+            <option value="ajudante">Ajudante</option>
+            <option value="cliente">Cliente</option>
+        </select>
+        <input id="endereco" placeholder="Endereço">
+        <input id="senha" type="password" placeholder="Senha" required>
+        <input id="chave_pix" placeholder="Chave PIX">
+        
+        <button id="btnCadastrar">Cadastrar</button>
+        <button id="btnLimpar">Limpar Tudo</button>
+        <button id="btnImprimir">Imprimir PDF</button>
+
+        <div id="mensagem" style="margin-top:10px;"></div>
+    </div>
+    <a href="index.html" class="voltar">← Voltar ao Login</a>
+</main>
+
+<script>
+function toggleMenu() { document.getElementById('menu').classList.toggle('open'); }
+
+// Supabase
+const SUPABASE_URL = "https://wicbydfuhxnsudoorsjf.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpY2J5ZGZ1aHhuc3Vkb29yc2pmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgwMzE4NDYsImV4cCI6MjA4MzYwNzg0Nn0.sMmQq9t1mbAxYzkjh6To-Eo6AIWpiUvTq_t_vXMB2I";
+
+function setCookie(name,value,days){
+    let expires="";if(days){let d=new Date();d.setTime(d.getTime()+(days*24*60*60*1000));expires="; expires="+d.toUTCString();}
+    document.cookie=name+"="+(value||"")+expires+"; path=/";
+}
+
+document.getElementById('btnCadastrar').addEventListener('click', async function(){
+    const data={
+        nome: document.getElementById('nome').value.trim(),
+        cpf: document.getElementById('cpf').value.trim() || null,
+        telefone: document.getElementById('telefone').value.trim() || null,
+        tipo: document.getElementById('tipo').value,
+        endereco: document.getElementById('endereco').value.trim() || null,
+        senha: document.getElementById('senha').value,
+        chave_pix: document.getElementById('chave_pix').value.trim() || null
+    };
+
+    if(!data.nome||!data.tipo||!data.senha){
+        mostrarMensagem('Preencha todos os campos obrigatórios!');
+        return;
+    }
+
+    // Cookie e localStorage
+    setCookie("usuario", data.nome, 7);
+    localStorage.setItem("usuario", JSON.stringify(data));
+
+    try {
+        const res=await fetch(`${SUPABASE_URL}/rest/v1/cadastro`,{
+            method:'POST',
+            headers:{
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`,
+                'Content-Type':'application/json',
+                'Prefer':'return=minimal'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if(res.ok){
+            mostrarMensagem('Cadastro realizado com sucesso ✅','green');
+            document.querySelector('.caixa').reset;
+        } else {
+            const txt=await res.text();
+            mostrarMensagem('Erro ao cadastrar: '+txt,'red');
+        }
+    } catch(err){
+        mostrarMensagem('Erro de conexão: '+err,'red');
+    }
+});
+
+document.getElementById('btnLimpar').addEventListener('click',function(){
+    ['nome','cpf','telefone','tipo','endereco','senha','chave_pix'].forEach(id=>document.getElementById(id).value='');
+    localStorage.clear();
+    setCookie("usuario","",-1);
+    mostrarMensagem('Campos limpos!','gold');
+});
+
+document.getElementById('btnImprimir').addEventListener('click',function(){
+    const conteudo=document.querySelector('.caixa').innerHTML;
+    const win=window.open("","_blank");
+    win.document.write("<html><head><title>PDF</title></head><body>"+conteudo+"</body></html>");
+    win.print();
+});
+
+function mostrarMensagem(msg,cor='gold'){
+    const div=document.getElementById('mensagem');
+    div.textContent=msg;
+    div.style.color=cor;
+}
+</script>
+
+<a id="zap-box" href="https://wa.me/5521967227546" target="_blank">
+<img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"> Atendimento
+</a>
+
+</body>
+</html>
