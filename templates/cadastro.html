@@ -6,7 +6,7 @@
 <title>Cadastro de Usuário</title>
 <style>
 body { font-family: Arial, sans-serif; padding: 20px; background-color: #f5f5f5; }
-h2 { text-align: center; }
+h2 { text-align: center; margin-bottom: 20px; }
 form { max-width: 500px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
 label { font-weight: bold; display: block; margin-top: 10px; }
 input, select, button { width: 100%; padding: 12px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; }
@@ -55,7 +55,7 @@ button:hover { background-color: #0056b3; }
 </form>
 
 <script>
-// HARD CODE da URL e ANON KEY
+// URL e ANON KEY do Supabase
 const SUPABASE_URL = "https://wicbydfuhxnsudoorsjf.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpY2J5ZGZ1aHhuc3Vkb29yc2pmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgwMzE4NDYsImV4cCI6MjA4MzYwNzg0Nn0.sMmQq9t1mbAxYzkjh6To-Eo6AIWpiUvTq_t_vXMB2I";
 
@@ -70,7 +70,7 @@ function setCookie(name, value, days) {
     document.cookie = name + "=" + (value || "") + expires + "; path=/";
 }
 
-// FUNÇÃO PRINCIPAL: envia direto pro Supabase
+// Função principal de cadastro
 async function cadastrar() {
     const data = {
         nome: document.getElementById('nome').value,
@@ -82,10 +82,8 @@ async function cadastrar() {
         chave_pix: document.getElementById('chave_pix').value || null
     };
 
-    // COOKIE
+    // Cookie e LocalStorage
     setCookie("usuario", data.nome, 7);
-
-    // LOCAL STORAGE
     localStorage.setItem("usuario", JSON.stringify(data));
 
     try {
@@ -113,7 +111,7 @@ async function cadastrar() {
     }
 }
 
-// FUNÇÃO LIMPAR
+// Limpar cookie e localStorage
 function limparTudo() {
     document.getElementById("cadastroForm").reset();
     localStorage.clear();
@@ -121,7 +119,7 @@ function limparTudo() {
     alert("Dados limpos!");
 }
 
-// FUNÇÃO IMPRIMIR PDF
+// Imprimir PDF
 function imprimirPDF() {
     const conteudo = document.getElementById("cadastroForm").innerHTML;
     const win = window.open("", "_blank");
