@@ -47,14 +47,6 @@ def fretes():
 def mapa():
     return render_template("mapa.html")
 
-@app.route("/veiculo")
-def veiculo():
-    return render_template("veiculo.html")
-
-#@app.route("/veiculo", methods=["POST"])
-#def veiculo_post():
-    # Lógica similar ao cadastro_post() para salvar na tabela veiculo
-
 
 
 # -----------------------
