@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rota Aribeiro</title>
+<style>
+  body { margin:0; font-family: Arial, sans-serif; background:#f4f4f4; }
+  .container { max-width:450px; margin:30px auto; background:white; padding:20px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); }
+  h2 { text-align:center; margin-bottom:20px; }
+  input, button { width:100%; padding:12px; margin:8px 0; border-radius:6px; border:1px solid #bbb; box-sizing:border-box; }
+  button { cursor:pointer; border:none; color:white; background:#007bff; font-size:16px; }
+  .status { padding:10px; margin-top:10px; border-radius:6px; }
+  .processando { background:#fff3cd; color:#856404; }
+  .sucesso { background:#d1edff; color:#155724; }
+  .erro { background:#f8d7da; color:#721c24; }
+  #listaRuas { background:#e9ecef; padding:10px; border-radius:6px; margin-top:10px; max-height:300px; overflow-y:auto; }
+  .info-total { margin-top:10px; padding:10px; background:#d1edff; border-radius:6px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>📍 Aribeiro Transportes</h2>
+  <input type="text" id="origem" placeholder="Digite o endereço de origem">
+  <input type="text" id="destino" placeholder="Digite o endereço de destino">
+  <button onclick="planejarRota()">🛣️ Calcular Rota</button>
+  <div id="status" class="status"></div>
+  <div class="info-total" id="infoTotal" style="display:none;"></div>
+  <div id="listaRuas"></div>
+</div>
+
+<script>
+// Geocoding via Nominatim
+async function geocodeEndereco(endereco) {
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(endereco)}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  if(data.length === 0) return null;
+  return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+}
+
+// Pegar rota detalhada via OSRM
+async function pegarRotaOSRM(origem, destino) {
+  const url = `https://router.project-osrm.org/route/v1/driving/${origem.lng},${origem.lat};${destino.lng},${destino.lat}?overview=false&steps=true&geometries=geojson`;
+  const res = await fetch(url);
+  const data = await res.json();
+  if(!data.routes || data.routes.length === 0) return null;
+  return data.routes[0];
+}
+
+async function planejarRota() {
+  const status = document.getElementById('status');
+  const listaRuasDiv = document.getElementById('listaRuas');
+  const infoTotalDiv = document.getElementById('infoTotal');
+  const origemEndereco = document.getElementById('origem').value.trim();
+  const destinoEndereco = document.getElementById('destino').value.trim();
+  
+  listaRuasDiv.innerHTML = '';
+  infoTotalDiv.style.display = 'none';
+  
+  if(!origemEndereco || !destinoEndereco) {
+    status.textContent = "❌ Preencha origem e destino";
+    status.className = "status erro";
+    return;
+  }
+  
+  status.textContent = "🟡 Buscando coordenadas...";
+  status.className = "status processando";
+  
+  try {
+    const origemCoord = await geocodeEndereco(origemEndereco);
+    const destinoCoord = await geocodeEndereco(destinoEndereco);
+    
+    if(!origemCoord || !destinoCoord) {
+      status.textContent = "❌ Não foi possível encontrar coordenadas";
+      status.className = "status erro";
+      return;
+    }
+    
+    status.textContent = "🟡 Buscando rota detalhada...";
+    status.className = "status processando";
+    
+    const rota = await pegarRotaOSRM(origemCoord, destinoCoord);
+    
+    if(!rota) {
+      status.textContent = "❌ Não foi possível calcular rota";
+      status.className = "status erro";
+      return;
+    }
+    
+    // Mostra distância e tempo
+    const distanciaKm = (rota.distance/1000).toFixed(2);
+    const tempoMin = Math.ceil(rota.duration/60);
+    infoTotalDiv.innerHTML = `📏 Distância: <strong>${distanciaKm} km</strong> | ⏱️ Tempo estimado: <strong>${tempoMin} min</strong>`;
+    infoTotalDiv.style.display = 'block';
+    
+    // Lista ruas detalhada
+    let listaHTML = "<strong>📋 Itinerário:</strong><br>";
+    rota.legs[0].steps.forEach((p,i) => {
+      listaHTML += `${i+1}. ${p.maneuver.instruction} (${(p.distance/1000).toFixed(2)} km)<br>`;
+    });
+    listaRuasDiv.innerHTML = listaHTML;
+    
+    // Salva coordenadas no localStorage
+    localStorage.setItem('rota', JSON.stringify({
+      origem: origemCoord,
+      destino: destinoCoord
+    }));
+    
+    status.textContent = "✅ Rota calculada! Abrindo mapa...";
+    status.className = "status sucesso";
+    
+    // Pula direto para mapa.html
+    setTimeout(() => { window.location.href = "/mapa"; }, 2000);
+    
+  } catch(e) {
+    console.error(e);
+    status.textContent = "❌ Erro ao calcular rota";
+    status.className = "status erro";
+  }
+}
+</script>
+</body>
+</html>
