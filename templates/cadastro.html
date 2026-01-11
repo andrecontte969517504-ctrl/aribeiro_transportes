@@ -1,161 +1,157 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cadastro Aribeiro Transportes</title>
-<style>
-    body {
-        background: #f5f5f5;
-        color: #333;
-        font-family: Arial, sans-serif;
-        padding: 20px;
-        text-align: center;
-    }
-    .caixa {
-        border: 1px solid #333;
-        padding: 20px;
-        border-radius: 10px;
-        width: 340px;
-        margin: auto;
-        background: #fff;
-        box-shadow: 0 0 15px #999;
-    }
-    input, select, button {
-        width: 95%;
-        padding: 10px;
-        margin: 8px 0;
-        border-radius: 6px;
-        border: 1px solid #333;
-        background: #fff;
-        color: #333;
-    }
-    button {
-        background: #eee;
-        cursor: pointer;
-    }
-    button:hover {
-        background: #333;
-        color: #fff;
-    }
-    .voltar {
-        display: block;
-        margin-top: 20px;
-        color: #333;
-        text-decoration: none;
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro Aribeiro Transportes</title>
+    <style>
+        body {
+            background: #f5f5f5;
+            color: #333;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+        .caixa {
+            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 10px;
+            width: 340px;
+            margin: auto;
+            background: #fff;
+            box-shadow: 0 0 15px #999;
+        }
+        input, select, button {
+            width: 95%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid #333;
+            background: #fff;
+            color: #333;
+        }
+        button {
+            background: #eee;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #333;
+            color: #fff;
+        }
+        .voltar {
+            display: block;
+            margin-top: 20px;
+            color: #333;
+            text-decoration: none;
+        }
+        .mensagem {
+            margin-top: 10px;
+            min-height: 20px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
 <h2>Cadastro Aribeiro Transportes</h2>
 
 <div class="caixa">
-    <input id="nomeCad" placeholder="Nome completo">
+    <input id="nomeCad" placeholder="Nome completo *">
     <input id="cpfCad" placeholder="CPF">
     <input id="telefoneCad" placeholder="Telefone">
     <select id="tipoCad">
-        <option value="">Selecione tipo</option>
+        <option value="">Selecione tipo *</option>
         <option value="gerente">Gerente</option>
         <option value="motorista">Motorista</option>
         <option value="ajudante">Ajudante</option>
         <option value="cliente">Cliente</option>
     </select>
     <input id="enderecoCad" placeholder="Endereço">
-    <input id="senhaCad" type="password" placeholder="Senha">
+    <input id="senhaCad" type="password" placeholder="Senha *">
     <input id="chavePixCad" placeholder="Chave Pix (opcional)">
 
     <button id="btnEnviarCadastro">Cadastrar</button>
     <button id="btnLimparCadastro">Limpar</button>
     <button id="btnImprimirCadastro">Imprimir PDF</button>
 
-    <div id="mensagemCadastro" style="margin-top: 10px;"></div>
+    <div id="mensagemCadastro" class="mensagem"></div>
 </div>
 
 <a href="/login" class="voltar">← Voltar ao Login</a>
 
 <script>
-const SUPABASE_URL = 'https://wicbydfuhxnsudoorsjf.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpY2J5ZGZ1aHhuc3Vkb29yc2pmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgwMzE4NDYsImV4cCI6MjA4MzYwNzg0Nn0.sMmQq9t1mbAxYzkjh6To-Eo6AIWpiUvTq_t_vXMB2I';
+    // CREDENCIAIS MANTIDAS (mesmo não sendo usadas no fluxo correto)
+    const SUPABASE_URL = 'https://wicbydfuhxnsudoorsjf.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpY2J5ZGZ1aHhuc3Vkb29yc2pmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgwMzE4NDYsImV4cCI6MjA4MzYwNzg0Nn0.sMmQq9t1mbAxYzkjh6To-Eo6AIWpiUvTq_t_vXMB2I';
 
-function mostrarMensagem(msg, cor='gold'){
-    const div = document.getElementById('mensagemCadastro');
-    div.textContent = msg;
-    div.style.color = cor;
-}
+    function mostrarMensagem(msg, cor = 'gold') {
+        const div = document.getElementById('mensagemCadastro');
+        div.textContent = msg;
+        div.style.color = cor;
+    }
 
-document.addEventListener('DOMContentLoaded', function(){
+    document.addEventListener('DOMContentLoaded', function() {
+        // Botão CADASTRAR - ENVIA PARA O FLASK (/cadastro)
+        document.getElementById('btnEnviarCadastro').addEventListener('click', async function() {
+            const dados = {
+                nome: document.getElementById('nomeCad').value.trim(),
+                cpf: document.getElementById('cpfCad').value.trim(),
+                telefone: document.getElementById('telefoneCad').value.trim(),
+                tipo: document.getElementById('tipoCad').value,
+                endereco: document.getElementById('enderecoCad').value.trim(),
+                senha: document.getElementById('senhaCad').value,
+                chave_pix: document.getElementById('chavePixCad').value.trim()
+            };
 
-    document.getElementById('btnEnviarCadastro').addEventListener('click', async function(){
-
-        const data = {
-            nome: document.getElementById('nomeCad').value.trim(),
-            cpf: document.getElementById('cpfCad').value.trim(),
-            telefone: document.getElementById('telefoneCad').value.trim(),
-            tipo: document.getElementById('tipoCad').value,
-            endereco: document.getElementById('enderecoCad').value.trim(),
-            senha: document.getElementById('senhaCad').value,
-            chave_pix: document.getElementById('chavePixCad').value.trim()
-        };
-
-        if(!data.nome || !data.senha || !data.tipo){
-            mostrarMensagem('Preencha todos os campos obrigatórios!');
-            return;
-        }
-
-        // SÓ SALVA NO LOCALSTORAGE - SEM COOKIE
-        localStorage.setItem('usuario', JSON.stringify(data));
-
-        try {
-            // FAZ O INSERT DIRETO
-            const insertResponse = await fetch(`${SUPABASE_URL}/rest/v1/cadastro`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': `Bearer ${SUPABASE_KEY}`,
-                    'Prefer': 'return=minimal'
-                },
-                // OBJETO DIRETO COM TODOS OS CAMPOS
-                body: JSON.stringify({
-                    nome: data.nome,
-                    cpf: data.cpf || null,
-                    telefone: data.telefone || null,
-                    tipo: data.tipo,
-                    endereco: data.endereco || null,
-                    senha: data.senha,
-                    chave_pix: data.chave_pix || null
-                })
-            });
-
-            if (!insertResponse.ok) {
-                throw new Error('Erro no cadastro');
+            // Validação
+            if (!dados.nome || !dados.senha || !dados.tipo) {
+                mostrarMensagem('Preencha nome, senha e tipo!', 'red');
+                return;
             }
 
-            mostrarMensagem('Cadastro realizado com sucesso! ✅','green');
-            setTimeout(()=>window.location.href='/login',2000);
+            mostrarMensagem('Enviando...', 'blue');
 
-        } catch(err){
-            mostrarMensagem('Erro: ' + err.message,'red');
-        }
-    });
+            try {
+                // CORREÇÃO: Envia para o Flask, não para o Supabase diretamente
+                const resposta = await fetch('/cadastro', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dados)
+                });
 
-    document.getElementById('btnLimparCadastro').addEventListener('click', function(){
-        ['nomeCad','cpfCad','telefoneCad','tipoCad','enderecoCad','senhaCad','chavePixCad'].forEach(id=>{
-            if(document.getElementById(id)) document.getElementById(id).value='';
+                const resultado = await resposta.json();
+
+                if (resposta.ok && resultado.status === 'ok') {
+                    mostrarMensagem('Cadastro realizado com sucesso! ✅', 'green');
+                    localStorage.setItem('usuario', JSON.stringify(dados));
+                    setTimeout(() => window.location.href = '/login', 2000);
+                } else {
+                    throw new Error(resultado.detalhes || 'Erro no cadastro');
+                }
+            } catch (err) {
+                mostrarMensagem('Erro: ' + err.message, 'red');
+                console.error(err);
+            }
         });
-        localStorage.clear();
-        mostrarMensagem('Campos limpos!','gold');
-    });
 
-    document.getElementById('btnImprimirCadastro').addEventListener('click', function(){
-        const conteudo = document.querySelector('.caixa').innerHTML;
-        const win = window.open("","_blank");
-        win.document.write("<html><head><title>Cadastro PDF</title></head><body>"+conteudo+"</body></html>");
-        win.print();
-    });
+        // Botão LIMPAR
+        document.getElementById('btnLimparCadastro').addEventListener('click', function() {
+            ['nomeCad', 'cpfCad', 'telefoneCad', 'tipoCad', 'enderecoCad', 'senhaCad', 'chavePixCad'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            mostrarMensagem('Campos limpos!', 'gold');
+        });
 
-});
+        // Botão IMPRIMIR
+        document.getElementById('btnImprimirCadastro').addEventListener('click', function() {
+            const conteudo = document.querySelector('.caixa').innerHTML;
+            const win = window.open("", "_blank");
+            win.document.write("<html><head><title>Cadastro PDF</title></head><body>" + conteudo + "</body></html>");
+            win.print();
+        });
+    });
 </script>
 
 </body>
