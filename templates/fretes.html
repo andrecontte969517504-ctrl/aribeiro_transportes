@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> Rota Aribeiro</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<title>Rota Aribeiro</title>
 <style>
   body { margin:0; font-family: Arial, sans-serif; background:#f4f4f4; }
   .container { max-width:450px; margin:30px auto; background:white; padding:20px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); }
@@ -46,7 +45,7 @@ async function pegarRotaOSRM(origem, destino) {
   const res = await fetch(url);
   const data = await res.json();
   if(!data.routes || data.routes.length === 0) return null;
-  return data.routes[0]; // rota completa
+  return data.routes[0];
 }
 
 async function planejarRota() {
@@ -89,7 +88,7 @@ async function planejarRota() {
       return;
     }
     
-    // Mostra distância total e tempo
+    // Mostra distância e tempo
     const distanciaKm = (rota.distance/1000).toFixed(2);
     const tempoMin = Math.ceil(rota.duration/60);
     infoTotalDiv.innerHTML = `📏 Distância: <strong>${distanciaKm} km</strong> | ⏱️ Tempo estimado: <strong>${tempoMin} min</strong>`;
@@ -111,7 +110,8 @@ async function planejarRota() {
     status.textContent = "✅ Rota calculada! Abrindo mapa...";
     status.className = "status sucesso";
     
-    setTimeout(() => { window.location.href = "mapa.html"; }, 2000);
+    // Pula direto para mapa.html
+    setTimeout(() => { window.location.href = "/mapa"; }, 2000);
     
   } catch(e) {
     console.error(e);
