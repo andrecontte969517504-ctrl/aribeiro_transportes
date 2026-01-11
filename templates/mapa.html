@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> Rota Aribeiro Transportes</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+<style>
+  body { margin:0; font-family: Arial,sans-serif; }
+  #map { width:100%; height:100vh; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+<script>
+const rota = JSON.parse(localStorage.getItem('rota'));
+
+if(!rota) {
+  alert("Nenhuma rota encontrada! Volte e insira endereços.");
+  window.location.href = "index.html";
+} else {
+  const map = L.map('map').setView([rota.origem.lat, rota.origem.lng], 15);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+
+  L.marker([rota.origem.lat, rota.origem.lng]).addTo(map).bindPopup("📍 Origem").openPopup();
+  L.marker([rota.destino.lat, rota.destino.lng]).addTo(map).bindPopup("🎯 Destino");
+
+  L.Routing.control({
+    waypoints: [
+      L.latLng(rota.origem.lat, rota.origem.lng),
+      L.latLng(rota.destino.lat, rota.destino.lng)
+    ],
+    routeWhileDragging: false,
+    showAlternatives: false,
+    lineOptions: { styles:[{color:'#dc3545', opacity:0.8, weight:6}] }
+  }).addTo(map);
+}
+</script>
+</body>
+</html>
