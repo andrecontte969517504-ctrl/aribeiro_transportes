@@ -5,10 +5,12 @@ import os
 app = Flask(__name__)
 
 # -----------------------
-# VARIÁVEIS DE AMBIENTE
+# VARIÁVEIS DE AMBIENTE (CORRIGIDAS)
 # -----------------------
 SUPABASE_URL = os.getenv("SUPABASE_URL", "https://wicbydfuhxnsudoorsjf.supabase.co")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpY2J5ZGZ1aHhuc3Vkb29yc2pmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgwMzE4NDYsImV4cCI6MjA4MzYwNzg0Nn0.sMmQq9t1mbAxYzkjh6To-Eo6AIWpiUvTq_t_vXMB2I")
+
+# USANDO A SECRET_KEY DO VERCEL (CORREÇÃO)
+SECRET_KEY = os.getenv("SECRET_KEY", "sb_secret_EzUAmnOCiurK8knt3GTvbA_o884xyRF")
 
 # -----------------------
 # ROTAS GET
@@ -70,33 +72,37 @@ def cadastro_post():
             "chave_pix": data.get("chavePix") or None  # ← CORRETO: chavePix do frontend → chave_pix do banco
         }
 
-        # Verifique no terminal se os dados estão corretos
-        print("=== DADOS RECEBIDOS DO FRONTEND ===")
-        print(f"Data recebida: {data}")
-        print(f"Dados para Supabase: {dados_para_supabase}")
-        print("===================================")
+        # Log para debug
+        print("=== TENTANDO CADASTRAR ===")
+        print(f"Dados recebidos: {dados_para_supabase}")
+        print(f"Usando URL: {SUPABASE_URL}")
+        print(f"Usando KEY (últimos 10 chars): {SUPABASE_KEY[-10:]}")
 
         url = f"{SUPABASE_URL}/rest/v1/cadastro"
         headers = {
-            "apikey": SUPABASE_KEY,
-            "Authorization": f"Bearer {SUPABASE_KEY}",
+            "apikey": SECRET_KEY,  # ← USANDO A SECRET_KEY CORRETA
+            "Authorization": f"Bearer {SECRET_KEY}",  # ← USANDO A SECRET_KEY CORRETA
             "Content-Type": "application/json",
             "Prefer": "return=minimal"
         }
 
-        print(f"Enviando para: {url}")
+        print(f"Headers: {headers}")
+        print(f"Enviando para Supabase...")
+
         res = requests.post(url, json=dados_para_supabase, headers=headers)
         
-        print(f"Resposta Supabase: {res.status_code}")
-        print(f"Texto resposta: {res.text}")
+        print(f"Resposta Status: {res.status_code}")
+        print(f"Resposta Texto: {res.text}")
 
         if res.status_code in (200, 201, 204):
+            print("✅ Cadastro realizado com sucesso no Supabase")
             return jsonify({"status": "ok", "detalhes": "Cadastro realizado"})
         else:
+            print(f"❌ Erro do Supabase: {res.status_code}")
             return jsonify({"status": "erro", "detalhes": res.text}), res.status_code
 
     except Exception as e:
-        print(f"ERRO NO SERVIDOR: {str(e)}")
+        print(f"🔥 ERRO NO SERVIDOR FLASK: {str(e)}")
         return jsonify({"status": "erro", "detalhes": str(e)}), 500
 
 # -----------------------
