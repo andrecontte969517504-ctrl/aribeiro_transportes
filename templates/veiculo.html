@@ -3,456 +3,333 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Veículo - Aribeiro Transportes</title>
+    <title>Cadastro Veículo</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100vh;
+            font-family: Arial, sans-serif;
             padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background: #f0f0f0;
         }
         
         .container {
-            max-width: 800px;
-            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-            margin-top: 30px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
-        header {
-            background: linear-gradient(to right, #2c3e50, #4a6491);
-            color: white;
-            padding: 30px;
+        h1 {
             text-align: center;
-        }
-        
-        header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
+            color: #333;
+            margin-bottom: 25px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
+            gap: 10px;
         }
         
-        header h1 i {
-            font-size: 32px;
+        .campo {
+            margin-bottom: 18px;
         }
         
-        .form-container {
-            padding: 40px;
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #444;
         }
         
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-        
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .form-group label {
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #2c3e50;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .form-group label i {
-            color: #667eea;
-        }
-        
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            padding: 14px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
             font-size: 16px;
-            transition: all 0.3s ease;
-            background: #f9f9f9;
         }
         
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        
-        .form-group.full-width {
-            grid-column: 1 / -1;
-        }
-        
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-            font-family: inherit;
-        }
-        
-        .button-group {
+        .botoes {
             display: flex;
-            gap: 15px;
-            justify-content: center;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
+            gap: 10px;
+            margin-top: 25px;
+            flex-wrap: wrap;
         }
         
         button {
-            padding: 16px 40px;
+            flex: 1;
+            padding: 12px;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            min-width: 180px;
+            gap: 8px;
+            min-width: 140px;
         }
         
-        #btnSalvar {
-            background: linear-gradient(to right, #00b09b, #96c93d);
+        .salvar {
+            background: #4CAF50;
             color: white;
         }
         
-        #btnSalvar:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 176, 155, 0.3);
+        .limpar {
+            background: #f44336;
+            color: white;
         }
         
-        #btnLimpar {
-            background: #f8f9fa;
-            color: #666;
-            border: 2px solid #ddd;
+        .imprimir {
+            background: #2196F3;
+            color: white;
         }
         
-        #btnLimpar:hover {
-            background: #e9ecef;
-            transform: translateY(-3px);
-        }
-        
-        #mensagem {
-            margin-top: 25px;
-            padding: 15px;
-            border-radius: 10px;
+        .mensagem {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
             text-align: center;
-            font-weight: 600;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            display: none;
         }
         
-        .mensagem-sucesso {
+        .sucesso {
             background: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
-            opacity: 1;
+            display: block;
         }
         
-        .mensagem-erro {
+        .erro {
             background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
-            opacity: 1;
+            display: block;
         }
         
         .voltar {
-            margin-top: 25px;
             text-align: center;
+            margin-top: 20px;
         }
         
         .voltar a {
-            color: white;
+            color: #2196F3;
             text-decoration: none;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 25px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-        
-        .voltar a:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-        
-        .required::after {
-            content: " *";
-            color: #e74c3c;
-        }
-        
-        @media (max-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .button-group {
-                flex-direction: column;
-            }
-            
-            button {
-                width: 100%;
-            }
-        }
-        
-        .icon {
-            font-style: normal;
-            font-size: 18px;
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1><i class="fas fa-truck-moving"></i> Cadastro de Veículo</h1>
-            <p>Preencha os dados do veículo da frota</p>
-        </header>
+        <h1>🚚 Cadastro de Veículo</h1>
         
-        <div class="form-container">
-            <form id="formVeiculo">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="tipo" class="required"><i class="fas fa-car"></i> Tipo do Veículo</label>
-                        <select id="tipo" required>
-                            <option value="">Selecione...</option>
-                            <option value="Caminhão">Caminhão</option>
-                            <option value="Carreta">Carreta</option>
-                            <option value="VUC">VUC</option>
-                            <option value="Toco">Toco</option>
-                            <option value="Truck">Truck</option>
-                            <option value="Carro">Carro</option>
-                            <option value="Moto">Moto</option>
-                            <option value="Outro">Outro</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="placa" class="required"><i class="fas fa-id-card"></i> Placa</label>
-                        <input type="text" id="placa" placeholder="AAA-0000" maxlength="8" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="renavam" class="required"><i class="fas fa-file-alt"></i> RENAVAM</label>
-                        <input type="text" id="renavam" placeholder="Número do RENAVAM" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="modelo" class="required"><i class="fas fa-cog"></i> Modelo</label>
-                        <input type="text" id="modelo" placeholder="Ex: Mercedes-Benz Actros" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="ano"><i class="fas fa-calendar-alt"></i> Ano</label>
-                        <input type="text" id="ano" placeholder="Ex: 2023">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="cor"><i class="fas fa-palette"></i> Cor</label>
-                        <input type="text" id="cor" placeholder="Ex: Branco">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="km_atual"><i class="fas fa-tachometer-alt"></i> Quilometragem Atual</label>
-                        <input type="number" id="km_atual" placeholder="0" min="0" step="1">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="motorista_id"><i class="fas fa-user"></i> ID do Motorista</label>
-                        <input type="number" id="motorista_id" placeholder="ID do motorista" min="1">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="documento"><i class="fas fa-file-contract"></i> Documentação</label>
-                        <input type="text" id="documento" placeholder="Status da documentação">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="status"><i class="fas fa-check-circle"></i> Status</label>
-                        <select id="status">
-                            <option value="">Selecione...</option>
-                            <option value="Ativo">Ativo</option>
-                            <option value="Em Manutenção">Em Manutenção</option>
-                            <option value="Inativo">Inativo</option>
-                            <option value="Em Viagem">Em Viagem</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group full-width">
-                        <label for="rota"><i class="fas fa-route"></i> Rota/Itinerário</label>
-                        <textarea id="rota" placeholder="Descreva a rota habitual ou itinerário..."></textarea>
-                    </div>
-                </div>
-                
-                <div class="button-group">
-                    <button type="button" id="btnSalvar">
-                        <i class="fas fa-save"></i> Salvar Veículo
-                    </button>
-                    <button type="button" id="btnLimpar">
-                        <i class="fas fa-broom"></i> Limpar Formulário
-                    </button>
-                </div>
-                
-                <div id="mensagem"></div>
-            </form>
+        <div class="campo">
+            <label>Tipo *</label>
+            <select id="tipo" required>
+                <option value="">Selecione...</option>
+                <option value="Caminhão">Caminhão</option>
+                <option value="Carreta">Carreta</option>
+                <option value="VUC">VUC</option>
+                <option value="Toco">Toco</option>
+                <option value="Truck">Truck</option>
+            </select>
         </div>
+        
+        <div class="campo">
+            <label>Placa *</label>
+            <input type="text" id="placa" placeholder="AAA-0000" required>
+        </div>
+        
+        <div class="campo">
+            <label>RENAVAM *</label>
+            <input type="text" id="renavam" required>
+        </div>
+        
+        <div class="campo">
+            <label>Modelo *</label>
+            <input type="text" id="modelo" required>
+        </div>
+        
+        <div class="campo">
+            <label>Ano</label>
+            <input type="text" id="ano">
+        </div>
+        
+        <div class="campo">
+            <label>Cor</label>
+            <input type="text" id="cor">
+        </div>
+        
+        <div class="campo">
+            <label>KM Atual</label>
+            <input type="number" id="km_atual">
+        </div>
+        
+        <div class="campo">
+            <label>ID Motorista</label>
+            <input type="number" id="motorista_id">
+        </div>
+        
+        <div class="campo">
+            <label>Status</label>
+            <select id="status">
+                <option value="">Selecione...</option>
+                <option value="Ativo">Ativo</option>
+                <option value="Em Manutenção">Em Manutenção</option>
+                <option value="Inativo">Inativo</option>
+            </select>
+        </div>
+        
+        <div class="campo">
+            <label>Rota</label>
+            <textarea id="rota" rows="2"></textarea>
+        </div>
+        
+        <div class="botoes">
+            <button class="salvar" id="btnSalvar">💾 Salvar Local</button>
+            <button class="limpar" id="btnLimpar">🗑️ Limpar</button>
+            <button class="imprimir" id="btnImprimir">🖨️ Imprimir PDF</button>
+        </div>
+        
+        <div id="mensagem"></div>
     </div>
     
     <div class="voltar">
-        <a href="/dashboard"><i class="fas fa-arrow-left"></i> Voltar ao Dashboard</a>
+        <a href="/dashboard">← Voltar</a>
     </div>
 
     <script>
-        // Credenciais do Supabase
-        const SUPABASE_URL = 'https://wicbydfuhxnsudoorsjf.supabase.co';
-        const SECRET_KEY = 'sb_secret_EzUAmnOCiurK8knt3GTvbA_o884xyRF';
-        
-        // Elementos do DOM
-        const form = document.getElementById('formVeiculo');
-        const btnSalvar = document.getElementById('btnSalvar');
-        const btnLimpar = document.getElementById('btnLimpar');
-        const mensagemDiv = document.getElementById('mensagem');
-        
-        // Função para mostrar mensagens
-        function mostrarMensagem(texto, tipo) {
-            mensagemDiv.textContent = texto;
-            mensagemDiv.className = '';
-            mensagemDiv.classList.add(`mensagem-${tipo}`);
-            mensagemDiv.style.opacity = '1';
-            
-            setTimeout(() => {
-                mensagemDiv.style.opacity = '0';
-            }, 5000);
-        }
-        
-        // Formatar placa enquanto digita
+        // Formatar placa
         document.getElementById('placa').addEventListener('input', function(e) {
             let value = e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-            
             if (value.length > 3) {
                 value = value.substring(0, 3) + '-' + value.substring(3, 7);
             }
-            
             e.target.value = value;
         });
         
-        // Botão Salvar
-        btnSalvar.addEventListener('click', async function() {
-            // Validar campos obrigatórios
-            const camposObrigatorios = ['tipo', 'placa', 'renavam', 'modelo'];
+        // Salvar no LocalStorage
+        document.getElementById('btnSalvar').addEventListener('click', function() {
+            const obrigatorios = ['tipo', 'placa', 'renavam', 'modelo'];
             let valido = true;
             
-            camposObrigatorios.forEach(campo => {
-                const elemento = document.getElementById(campo);
-                if (!elemento.value.trim()) {
-                    elemento.style.borderColor = '#e74c3c';
+            obrigatorios.forEach(id => {
+                const campo = document.getElementById(id);
+                if (!campo.value.trim()) {
+                    campo.style.borderColor = 'red';
                     valido = false;
                 } else {
-                    elemento.style.borderColor = '#e0e0e0';
+                    campo.style.borderColor = '#ccc';
                 }
             });
             
             if (!valido) {
-                mostrarMensagem('Preencha todos os campos obrigatórios!', 'erro');
+                mostrarMsg('Preencha os campos obrigatórios!', 'erro');
                 return;
             }
             
-            // Coletar dados do formulário
-            const dadosVeiculo = {
-                tipo: document.getElementById('tipo').value.trim(),
-                placa: document.getElementById('placa').value.trim(),
-                renavam: document.getElementById('renavam').value.trim(),
-                modelo: document.getElementById('modelo').value.trim(),
-                ano: document.getElementById('ano').value.trim() || null,
-                cor: document.getElementById('cor').value.trim() || null,
-                km_atual: document.getElementById('km_atual').value ? parseFloat(document.getElementById('km_atual').value) : null,
-                motorista_id: document.getElementById('motorista_id').value ? parseInt(document.getElementById('motorista_id').value) : null,
-                documento: document.getElementById('documento').value.trim() || null,
-                rota: document.getElementById('rota').value.trim() || null,
-                status: document.getElementById('status').value.trim() || null
+            const veiculo = {
+                tipo: document.getElementById('tipo').value,
+                placa: document.getElementById('placa').value,
+                renavam: document.getElementById('renavam').value,
+                modelo: document.getElementById('modelo').value,
+                ano: document.getElementById('ano').value || '',
+                cor: document.getElementById('cor').value || '',
+                km_atual: document.getElementById('km_atual').value || '',
+                motorista_id: document.getElementById('motorista_id').value || '',
+                status: document.getElementById('status').value || '',
+                rota: document.getElementById('rota').value || '',
+                data_cadastro: new Date().toLocaleString()
             };
             
-            // Mostrar mensagem de carregamento
-            mostrarMensagem('Salvando veículo...', 'sucesso');
-            btnSalvar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
-            btnSalvar.disabled = true;
+            // Salvar no LocalStorage
+            let veiculos = JSON.parse(localStorage.getItem('veiculos') || '[]');
+            veiculos.push(veiculo);
+            localStorage.setItem('veiculos', JSON.stringify(veiculos));
             
-            try {
-                // Enviar para o backend Flask
-                const resposta = await fetch('/veiculo', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(dadosVeiculo)
-                });
-                
-                const resultado = await resposta.json();
-                
-                if (resposta.ok && resultado.status === 'ok') {
-                    mostrarMensagem('Veículo cadastrado com sucesso! ✅', 'sucesso');
-                    
-                    // Limpar formulário após sucesso
-                    setTimeout(() => {
-                        form.reset();
-                        btnSalvar.innerHTML = '<i class="fas fa-save"></i> Salvar Veículo';
-                        btnSalvar.disabled = false;
-                    }, 1500);
-                    
-                } else {
-                    throw new Error(resultado.detalhes || 'Erro ao cadastrar veículo');
-                }
-                
-            } catch (err) {
-                mostrarMensagem('Erro: ' + err.message, 'erro');
-                btnSalvar.innerHTML = '<i class="fas fa-save"></i> Salvar Veículo';
-                btnSalvar.disabled = false;
-                console.error(err);
+            mostrarMsg('Veículo salvo no LocalStorage! ✅', 'sucesso');
+        });
+        
+        // Limpar
+        document.getElementById('btnLimpar').addEventListener('click', function() {
+            if (confirm('Limpar todos os campos?')) {
+                document.querySelectorAll('input, select, textarea').forEach(c => c.value = '');
+                mostrarMsg('Campos limpos', 'sucesso');
             }
         });
         
-        // Botão Limpar
-        btnLimpar.addEventListener('click', function() {
-            if (confirm('Tem certeza que deseja limpar todos os campos?')) {
-                form.reset();
-                mostrarMensagem('Formulário limpo!', 'sucesso');
+        // Imprimir PDF
+        document.getElementById('btnImprimir').addEventListener('click', function() {
+            const veiculos = JSON.parse(localStorage.getItem('veiculos') || '[]');
+            
+            if (veiculos.length === 0) {
+                mostrarMsg('Nenhum veículo salvo no LocalStorage!', 'erro');
+                return;
             }
-        });
-        
-        // Resetar borda quando o usuário começar a digitar
-        const inputs = form.querySelectorAll('input, select, textarea');
-        inputs.forEach(input => {
-            input.addEventListener('input', function() {
-                this.style.borderColor = '#e0e0e0';
+            
+            // Criar conteúdo para impressão
+            let conteudo = `
+                <html>
+                <head>
+                    <title>Relatório de Veículos</title>
+                    <style>
+                        body { font-family: Arial; padding: 20px; }
+                        h1 { text-align: center; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+                        th { background: #f0f0f0; }
+                    </style>
+                </head>
+                <body>
+                    <h1>🚚 Veículos Cadastrados</h1>
+                    <p><strong>Data:</strong> ${new Date().toLocaleDateString()}</p>
+                    <p><strong>Total:</strong> ${veiculos.length} veículo(s)</p>
+                    
+                    <table>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Placa</th>
+                            <th>Modelo</th>
+                            <th>Ano</th>
+                            <th>Status</th>
+                            <th>Data Cadastro</th>
+                        </tr>
+            `;
+            
+            veiculos.forEach(v => {
+                conteudo += `
+                    <tr>
+                        <td>${v.tipo}</td>
+                        <td>${v.placa}</td>
+                        <td>${v.modelo}</td>
+                        <td>${v.ano}</td>
+                        <td>${v.status}</td>
+                        <td>${v.data_cadastro}</td>
+                    </tr>
+                `;
             });
+            
+            conteudo += `
+                    </table>
+                </body>
+                </html>
+            `;
+            
+            // Abrir janela para impressão
+            const janela = window.open('', '_blank');
+            janela.document.write(conteudo);
+            janela.document.close();
+            janela.print();
+            
+            mostrarMsg('PDF gerado com sucesso!', 'sucesso');
         });
+        
+        function mostrarMsg(texto, tipo) {
+            const msg = document.getElementById('mensagem');
+            msg.textContent = texto;
+            msg.className = tipo;
+            setTimeout(() => msg.style.display = 'none', 4000);
+        }
     </script>
 </body>
 </html>
