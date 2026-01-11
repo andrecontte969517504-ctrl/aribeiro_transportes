@@ -82,7 +82,11 @@
 <script>
     // CREDENCIAIS MANTIDAS (mesmo não sendo usadas no fluxo correto)
     const SUPABASE_URL = 'https://wicbydfuhxnsudoorsjf.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpY2J5ZGZ1aHhuc3Vkb29yc2pmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgwMzE4NDYsImV4cCI6MjA4MzYwNzg0Nn0.sMmQq9t1mbAxYzkjh6To-Eo6AIWpiUvTq_t_vXMB2I';
+    // COMENTADA conforme solicitado:
+    // const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpY2J5ZGZ1aHhuc3Vkb29yc2pmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgwMzE4NDYsImV4cCI6MjA4MzYwNzg0Nn0.sMmQq9t1mbAxYzkjh6To-Eo6AIWpiUvTq_t_vXMB2I';
+    
+    // NOVA SECRET_KEY conforme solicitado
+    const SECRET_KEY = 'sb_secret_EzUAmnOCiurK8knt3GTvbA_o884xyRF';
 
     function mostrarMensagem(msg, cor = 'gold') {
         const div = document.getElementById('mensagemCadastro');
@@ -112,7 +116,7 @@
             mostrarMensagem('Enviando...', 'blue');
 
             try {
-                // CORREÇÃO: Envia para o Flask, não para o Supabase diretamente
+                // ENVIA PARA O SEU BACKEND FLASK
                 const resposta = await fetch('/cadastro', {
                     method: 'POST',
                     headers: {
