@@ -9,7 +9,7 @@ app = Flask(__name__)
 # -----------------------
 SUPABASE_URL = os.getenv("SUPABASE_URL", "https://wicbydfuhxnsudoorsjf.supabase.co")
 
-# USANDO A SECRET_KEY DO VERCEL (CORREÇÃO)
+# USANDO A SECRET_KEY DO VERCEL (CORREÇÃO) - VARIÁVEL RENOMEADA
 SECRET_KEY = os.getenv("SECRET_KEY", "sb_secret_EzUAmnOCiurK8knt3GTvbA_o884xyRF")
 
 # -----------------------
@@ -72,11 +72,11 @@ def cadastro_post():
             "chave_pix": data.get("chavePix") or None  # ← CORRETO: chavePix do frontend → chave_pix do banco
         }
 
-        # Log para debug
+        # Log para debug - CORRIGIDO: usando SECRET_KEY em vez de SUPABASE_KEY
         print("=== TENTANDO CADASTRAR ===")
         print(f"Dados recebidos: {dados_para_supabase}")
         print(f"Usando URL: {SUPABASE_URL}")
-        print(f"Usando KEY (últimos 10 chars): {SUPABASE_KEY[-10:]}")
+        print(f"Usando KEY (últimos 10 chars): {SECRET_KEY[-10:]}")
 
         url = f"{SUPABASE_URL}/rest/v1/cadastro"
         headers = {
