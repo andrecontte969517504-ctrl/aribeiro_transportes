@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Veículo - Aribeiro Transportes</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            margin-top: 30px;
+        }
+        
+        header {
+            background: linear-gradient(to right, #2c3e50, #4a6491);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        header h1 i {
+            font-size: 32px;
+        }
+        
+        .form-container {
+            padding: 40px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-group label i {
+            color: #667eea;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f9f9f9;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        button {
+            padding: 16px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-width: 180px;
+        }
+        
+        #btnSalvar {
+            background: linear-gradient(to right, #00b09b, #96c93d);
+            color: white;
+        }
+        
+        #btnSalvar:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 176, 155, 0.3);
+        }
+        
+        #btnLimpar {
+            background: #f8f9fa;
+            color: #666;
+            border: 2px solid #ddd;
+        }
+        
+        #btnLimpar:hover {
+            background: #e9ecef;
+            transform: translateY(-3px);
+        }
+        
+        #mensagem {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .mensagem-sucesso {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            opacity: 1;
+        }
+        
+        .mensagem-erro {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            opacity: 1;
+        }
+        
+        .voltar {
+            margin-top: 25px;
+            text-align: center;
+        }
+        
+        .voltar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .voltar a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+        
+        .icon {
+            font-style: normal;
+            font-size: 18px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-truck-moving"></i> Cadastro de Veículo</h1>
+            <p>Preencha os dados do veículo da frota</p>
+        </header>
+        
+        <div class="form-container">
+            <form id="formVeiculo">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="tipo" class="required"><i class="fas fa-car"></i> Tipo do Veículo</label>
+                        <select id="tipo" required>
+                            <option value="">Selecione...</option>
+                            <option value="Caminhão">Caminhão</option>
+                            <option value="Carreta">Carreta</option>
+                            <option value="VUC">VUC</option>
+                            <option value="Toco">Toco</option>
+                            <option value="Truck">Truck</option>
+                            <option value="Carro">Carro</option>
+                            <option value="Moto">Moto</option>
+                            <option value="Outro">Outro</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="placa" class="required"><i class="fas fa-id-card"></i> Placa</label>
+                        <input type="text" id="placa" placeholder="AAA-0000" maxlength="8" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="renavam" class="required"><i class="fas fa-file-alt"></i> RENAVAM</label>
+                        <input type="text" id="renavam" placeholder="Número do RENAVAM" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="modelo" class="required"><i class="fas fa-cog"></i> Modelo</label>
+                        <input type="text" id="modelo" placeholder="Ex: Mercedes-Benz Actros" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ano"><i class="fas fa-calendar-alt"></i> Ano</label>
+                        <input type="text" id="ano" placeholder="Ex: 2023">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cor"><i class="fas fa-palette"></i> Cor</label>
+                        <input type="text" id="cor" placeholder="Ex: Branco">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="km_atual"><i class="fas fa-tachometer-alt"></i> Quilometragem Atual</label>
+                        <input type="number" id="km_atual" placeholder="0" min="0" step="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="motorista_id"><i class="fas fa-user"></i> ID do Motorista</label>
+                        <input type="number" id="motorista_id" placeholder="ID do motorista" min="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="documento"><i class="fas fa-file-contract"></i> Documentação</label>
+                        <input type="text" id="documento" placeholder="Status da documentação">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="status"><i class="fas fa-check-circle"></i> Status</label>
+                        <select id="status">
+                            <option value="">Selecione...</option>
+                            <option value="Ativo">Ativo</option>
+                            <option value="Em Manutenção">Em Manutenção</option>
+                            <option value="Inativo">Inativo</option>
+                            <option value="Em Viagem">Em Viagem</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="rota"><i class="fas fa-route"></i> Rota/Itinerário</label>
+                        <textarea id="rota" placeholder="Descreva a rota habitual ou itinerário..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button type="button" id="btnSalvar">
+                        <i class="fas fa-save"></i> Salvar Veículo
+                    </button>
+                    <button type="button" id="btnLimpar">
+                        <i class="fas fa-broom"></i> Limpar Formulário
+                    </button>
+                </div>
+                
+                <div id="mensagem"></div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="voltar">
+        <a href="/dashboard"><i class="fas fa-arrow-left"></i> Voltar ao Dashboard</a>
+    </div>
+
+    <script>
+        // Credenciais do Supabase
+        const SUPABASE_URL = 'https://wicbydfuhxnsudoorsjf.supabase.co';
+        const SECRET_KEY = 'sb_secret_EzUAmnOCiurK8knt3GTvbA_o884xyRF';
+        
+        // Elementos do DOM
+        const form = document.getElementById('formVeiculo');
+        const btnSalvar = document.getElementById('btnSalvar');
+        const btnLimpar = document.getElementById('btnLimpar');
+        const mensagemDiv = document.getElementById('mensagem');
+        
+        // Função para mostrar mensagens
+        function mostrarMensagem(texto, tipo) {
+            mensagemDiv.textContent = texto;
+            mensagemDiv.className = '';
+            mensagemDiv.classList.add(`mensagem-${tipo}`);
+            mensagemDiv.style.opacity = '1';
+            
+            setTimeout(() => {
+                mensagemDiv.style.opacity = '0';
+            }, 5000);
+        }
+        
+        // Formatar placa enquanto digita
+        document.getElementById('placa').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+            
+            if (value.length > 3) {
+                value = value.substring(0, 3) + '-' + value.substring(3, 7);
+            }
+            
+            e.target.value = value;
+        });
+        
+        // Botão Salvar
+        btnSalvar.addEventListener('click', async function() {
+            // Validar campos obrigatórios
+            const camposObrigatorios = ['tipo', 'placa', 'renavam', 'modelo'];
+            let valido = true;
+            
+            camposObrigatorios.forEach(campo => {
+                const elemento = document.getElementById(campo);
+                if (!elemento.value.trim()) {
+                    elemento.style.borderColor = '#e74c3c';
+                    valido = false;
+                } else {
+                    elemento.style.borderColor = '#e0e0e0';
+                }
+            });
+            
+            if (!valido) {
+                mostrarMensagem('Preencha todos os campos obrigatórios!', 'erro');
+                return;
+            }
+            
+            // Coletar dados do formulário
+            const dadosVeiculo = {
+                tipo: document.getElementById('tipo').value.trim(),
+                placa: document.getElementById('placa').value.trim(),
+                renavam: document.getElementById('renavam').value.trim(),
+                modelo: document.getElementById('modelo').value.trim(),
+                ano: document.getElementById('ano').value.trim() || null,
+                cor: document.getElementById('cor').value.trim() || null,
+                km_atual: document.getElementById('km_atual').value ? parseFloat(document.getElementById('km_atual').value) : null,
+                motorista_id: document.getElementById('motorista_id').value ? parseInt(document.getElementById('motorista_id').value) : null,
+                documento: document.getElementById('documento').value.trim() || null,
+                rota: document.getElementById('rota').value.trim() || null,
+                status: document.getElementById('status').value.trim() || null
+            };
+            
+            // Mostrar mensagem de carregamento
+            mostrarMensagem('Salvando veículo...', 'sucesso');
+            btnSalvar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+            btnSalvar.disabled = true;
+            
+            try {
+                // Enviar para o backend Flask
+                const resposta = await fetch('/veiculo', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dadosVeiculo)
+                });
+                
+                const resultado = await resposta.json();
+                
+                if (resposta.ok && resultado.status === 'ok') {
+                    mostrarMensagem('Veículo cadastrado com sucesso! ✅', 'sucesso');
+                    
+                    // Limpar formulário após sucesso
+                    setTimeout(() => {
+                        form.reset();
+                        btnSalvar.innerHTML = '<i class="fas fa-save"></i> Salvar Veículo';
+                        btnSalvar.disabled = false;
+                    }, 1500);
+                    
+                } else {
+                    throw new Error(resultado.detalhes || 'Erro ao cadastrar veículo');
+                }
+                
+            } catch (err) {
+                mostrarMensagem('Erro: ' + err.message, 'erro');
+                btnSalvar.innerHTML = '<i class="fas fa-save"></i> Salvar Veículo';
+                btnSalvar.disabled = false;
+                console.error(err);
+            }
+        });
+        
+        // Botão Limpar
+        btnLimpar.addEventListener('click', function() {
+            if (confirm('Tem certeza que deseja limpar todos os campos?')) {
+                form.reset();
+                mostrarMensagem('Formulário limpo!', 'sucesso');
+            }
+        });
+        
+        // Resetar borda quando o usuário começar a digitar
+        const inputs = form.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                this.style.borderColor = '#e0e0e0';
+            });
+        });
+    </script>
+</body>
+</html>
