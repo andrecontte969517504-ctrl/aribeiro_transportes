@@ -51,8 +51,8 @@ def mapa():
 def veiculo():
     return render_template("veiculo.html")
 
-@app.route("/veiculo", methods=["POST"])
-def veiculo_post():
+#@app.route("/veiculo", methods=["POST"])
+#def veiculo_post():
     # Lógica similar ao cadastro_post() para salvar na tabela veiculo
 
 
